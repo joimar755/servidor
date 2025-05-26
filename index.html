@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Conversión Decimal</title>
+  <title>Conversor de Bases</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
@@ -77,17 +77,36 @@
     <div class="row justify-content-center">
       <div class="col-md-10 col-lg-8">
         <div class="card">
-          <h2 class="text-center mb-4">🔢 Conversión de Decimal</h2>
+          <h2 class="text-center mb-4">🔄 Conversor entre Bases</h2>
 
           <!-- Formulario -->
           <form id="conversion-form">
-            <div class="row g-3 align-items-center justify-content-center">
-              <div class="col-md-auto">
-                <label for="decimalInput" class="form-label">Número decimal:</label>
-              </div>
+            <div class="row g-3 justify-content-center align-items-end">
               <div class="col-md-4">
-                <input type="number" id="decimalInput" name="decimal" class="form-control" required />
+                <label for="numeroInput" class="form-label">Número a convertir:</label>
+                <input type="text" id="numeroInput" class="form-control" required />
               </div>
+
+              <div class="col-md-3">
+                <label for="origen" class="form-label">Base de origen:</label>
+                <select id="origen" class="form-control">
+                  <option value="2">Binario</option>
+                  <option value="8">Octal</option>
+                  <option value="10" selected>Decimal</option>
+                  <option value="16">Hexadecimal</option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label for="destino" class="form-label">Convertir a:</label>
+                <select id="destino" class="form-control">
+                  <option value="2">Binario</option>
+                  <option value="8">Octal</option>
+                  <option value="10">Decimal</option>
+                  <option value="16">Hexadecimal</option>
+                </select>
+              </div>
+
               <div class="col-md-auto">
                 <button type="submit" class="btn btn-primary">Convertir</button>
               </div>
@@ -96,8 +115,7 @@
 
           <!-- Resultados -->
           <div class="result-box mt-4" id="resultado">
-            <p><strong>Hexadecimal:</strong> —</p>
-            <p><strong>Binario:</strong> —</p>
+            <p>Selecciona las bases y convierte un número.</p>
           </div>
 
           <!-- Estado del servidor -->
@@ -109,27 +127,35 @@
     </div>
   </div>
 
-  <!-- Script JavaScript -->
+  <!-- JavaScript -->
   <script>
-    document.getElementById('conversion-form').addEventListener('submit', function(event) {
+    const nombresBase = {
+      2: "Binario",
+      8: "Octal",
+      10: "Decimal",
+      16: "Hexadecimal"
+    };
+
+    document.getElementById("conversion-form").addEventListener("submit", function(event) {
       event.preventDefault();
-      const decimalInput = document.getElementById("decimalInput").value;
-      const decimal = parseInt(decimalInput);
-      const resultadoDiv = document.getElementById('resultado');
+
+      const numeroInput = document.getElementById("numeroInput").value.trim().toUpperCase();
+      const origen = parseInt(document.getElementById("origen").value);
+      const destino = parseInt(document.getElementById("destino").value);
+      const resultadoDiv = document.getElementById("resultado");
+
+      const decimal = parseInt(numeroInput, origen);
 
       if (isNaN(decimal)) {
-        resultadoDiv.innerHTML = `
-          <p style="color: red;"><strong>Por favor, ingresa un número válido.</strong></p>
-        `;
+        resultadoDiv.innerHTML = `<p style="color:red;"><strong>Error:</strong> Número inválido para base ${nombresBase[origen]}.</p>`;
         return;
       }
 
-      const hexadecimal = decimal.toString(16).toUpperCase();
-      const binario = decimal.toString(2);
+      const convertido = decimal.toString(destino).toUpperCase();
 
       resultadoDiv.innerHTML = `
-        <p><strong>Hexadecimal:</strong> ${hexadecimal}</p>
-        <p><strong>Binario:</strong> ${binario}</p>
+        <p><strong>Entrada (${nombresBase[origen]}):</strong> ${numeroInput}</p>
+        <p><strong>Salida (${nombresBase[destino]}):</strong> ${convertido}</p>
       `;
     });
   </script>
